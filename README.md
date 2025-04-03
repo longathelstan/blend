@@ -1,0 +1,3 @@
+# Blend
+
+## Hi! This readme is still incomplete since the project isnt anywhere near complete...
