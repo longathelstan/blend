@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "package": "blend.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "client": [
+        "minecraft.KeyboardMixin",
+        "minecraft.MinecraftClientMixin",
+        "minecraft.gui.screen.ChatScreenMixin",
+        "minecraft.input.KeyboardInputMixin",
+        "minecraft.network.ClientPlayerEntityMixin",
+        "minecraft.option.KeybindingMixin"
+    ]
+}

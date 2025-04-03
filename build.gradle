@@ -1,0 +1,84 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+	id 'fabric-loom' version '1.10-SNAPSHOT'
+	id "org.jetbrains.kotlin.jvm" version "2.1.20"
+	id "org.jetbrains.kotlin.plugin.serialization" version "2.1.20" // keep same as kotlin
+	id "com.github.node-gradle.node" version "7.1.0"
+}
+
+version = 6.0
+group = "blend"
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	minecraft("com.mojang:minecraft:${project.minecraft_version}")
+	mappings("net.fabricmc:yarn:${project.yarn_mappings}:v2")
+	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
+
+	include implementation("org.greenrobot:eventbus:3.1.1")
+	include implementation("io.ktor:ktor-server-core-jvm:${project.ktor_version}")
+	include implementation("io.ktor:ktor-server-netty:${project.ktor_version}")
+	include implementation("io.ktor:ktor-server-content-negotiation:${project.ktor_version}")
+	include implementation("io.ktor:ktor-serialization-kotlinx-json:${project.ktor_version}")
+	include implementation("io.ktor:ktor-server-cors:${project.ktor_version}")
+
+}
+
+processResources {
+	dependsOn "buildWebApp"
+	from("webapp/dist") {
+		into("/assets/static")
+	}
+	filesMatching("fabric.mod.json") {
+		expand([
+				"version": project.version,
+				"loader_version": project.property("loader_version"),
+				"minecraft_version": project.property("minecraft_version"),
+				"fabric_kotlin_version": project.property("fabric_kotlin_version")
+		])
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 21
+}
+
+tasks.withType(KotlinCompile).configureEach {
+	kotlinOptions {
+		jvmTarget = 21
+	}
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.register("installPackages", NpmTask) {
+	workingDir = file("webapp")
+	args = ["install"]
+	inputs.files("webapp/package.json", "webapp/package-lock.json")
+	outputs.dir("webapp/node_modules")
+}
+
+tasks.register("formatWithPrettier", NpmTask) {
+	dependsOn "installPackages"
+	workingDir = file("webapp")
+	args = ["run", "format"]
+	inputs.dir("webapp/src")
+	outputs.dir("webapp/dist")
+}
+
+tasks.register("buildWebApp", NpmTask) {
+	dependsOn "formatWithPrettier"
+	workingDir = file("webapp")
+	args = ["run", "build"]
+	inputs.dir("webapp/src")
+	inputs.dir("webapp/public")
+	outputs.dir("webapp/dist")
+}
