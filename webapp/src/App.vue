@@ -1,27 +1,21 @@
 <script setup lang="ts">
-import axios from 'axios'
-import type { ClientInfo } from './data/responses'
-import { ref } from 'vue'
+import Sidebar from './components/Sidebar.vue'
 
-var clientInfo = ref<ClientInfo | null>(null)
-axios
-    .get('http://localhost:6969/api/client')
-    .then((fr) => {
-        clientInfo.value = fr.data
-    })
-    .catch((error) => {
-        console.log(error)
-    })
-    .finally(() => {
-        if (clientInfo.value == null) {
-            document.title = 'What the'
-        } else {
-            document.title = clientInfo.value?.name + ' v' + clientInfo.value?.version
-        }
-    })
+const socket = new WebSocket('ws://localhost:6969/blend')
+socket.onmessage = (e) => console.log('recieved: ', e.data)
+socket.onerror = (e) => console.error('error with connection:', e)
+socket.onclose = (e) => console.log('closed connection: ', e.reason)
+socket.onopen = async () => {
+    console.log('opened connection')
+    socket.send('{"type": "info"}')
+    await new Promise((res) => setTimeout(res, 2000))
+    socket.close(1000, 'closed on purpose frr')
+}
 </script>
 
 <template>
-    <h1 v-if="clientInfo">{{ clientInfo.name }} v{{ clientInfo.version }}</h1>
-    <h1 v-else>I do not know html and css, lol</h1>
+    <Sidebar />
+    <h1>Empty....</h1>
 </template>
+
+<style lang="css"></style>

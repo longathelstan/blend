@@ -1,22 +1,11 @@
 @import 'tailwindcss';
 
-.light {
-    --body-bg: var(--color-gray-50);
-    --bg: var(--color-gray-100);
-    --text: var(--color-black);
-}
+/* dark theme selector */
+@custom-variant dark (&:where(.dark, .dark *));
 
-.dark {
-    --body-bg: var(--color-gray-950);
-    --bg: var(--color-gray-900);
-    --text: var(--color-white);
+* {
+    @apply transition-all ease-out duration-200;
 }
-
 body {
-    background-color: var(--body-bg);
-    color: var(--text);
-}
-
-.bg {
-    background-color: var(--bg);
+    @apply bg-gray-50 dark:bg-gray-950;
 }
