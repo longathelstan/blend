@@ -2,7 +2,6 @@ package blend.module
 
 import blend.event.EventBus
 import blend.event.Subscriber
-import blend.ktor.ModuleInfo
 import blend.util.interfaces.IAccessor
 import blend.value.*
 import org.lwjgl.glfw.GLFW
@@ -40,11 +39,6 @@ abstract class AbstractModule(
             }
         }
     }
-
-    val info: ModuleInfo
-        get() = ModuleInfo(
-            names, description, category.formattedName, get(), canBeEnabled
-        )
 
     fun boolean(name: String, value: Boolean, parent: ValueParent = this, visibility: () -> Boolean = { true }) = BooleanValue(name, parent, visibility, value)
     fun int(name: String, defaultValue: Int, minimum: Int, maximum: Int, incrementBy: Int = 1, parent: ValueParent = this, visibility: () -> Boolean = { true }) = IntValue(name, parent, visibility, defaultValue, minimum, maximum, incrementBy)

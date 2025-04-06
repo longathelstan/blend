@@ -3,13 +3,10 @@ package blend.ktor
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 object KtorApplication {
 
-    private val serverScope = CoroutineScope(Dispatchers.Default)
     private val server = embeddedServer(
             factory = Netty,
             port = 6969,
@@ -18,12 +15,13 @@ object KtorApplication {
     )
 
     fun init() {
-        serverScope.launch {
-            server.start(true)
-        }
+        server.start(wait = false)
     }
 
     fun close() {
+        runBlocking {
+            WebSocket.close()
+        }
         server.stop()
     }
 

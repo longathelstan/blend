@@ -6,11 +6,7 @@ import blend.module.ModuleManager
 import blend.util.extensions.addChatError
 import blend.util.extensions.addChatInfo
 import blend.util.extensions.addChatWarn
-import com.google.gson.FormattingStyle
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import net.minecraft.text.ClickEvent
+import com.google.gson.*
 import net.minecraft.text.HoverEvent
 import net.minecraft.text.Style
 import net.minecraft.text.Text
@@ -23,7 +19,7 @@ object ConfigManager {
     val folder = File(Client.folder, "configs").also {
         it.mkdirs()
     }
-    private val gson = GsonBuilder()
+    val gson: Gson = GsonBuilder()
         .setFormattingStyle(FormattingStyle.PRETTY.withIndent("    "))
         .create()
 

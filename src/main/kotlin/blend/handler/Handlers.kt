@@ -11,9 +11,6 @@ import blend.module.impl.visual.ClientThemeModule
 import blend.util.interfaces.IAccessor
 import org.greenrobot.eventbus.Subscribe
 import org.lwjgl.glfw.GLFW
-import java.awt.Color
-import kotlin.math.PI
-import kotlin.math.sin
 
 sealed interface Handler: Subscriber, IAccessor {
     fun init() = EventBus.register(this)
